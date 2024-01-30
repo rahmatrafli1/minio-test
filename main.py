@@ -80,11 +80,24 @@ def list_buckets():
     for bucket in buckets:
         print("Name:", bucket.name,"Creation time:", bucket.creation_date)
 
+# delete object
+def delete_object_on_bucket():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "test-bucket"
+    o_name = "python/hello.py"
+
+    client.remove_object(b_name, o_name)
+
 if __name__ == "__main__":
     try:
         # main()
         # rename_bucket("python-test-bucket", "test-bucket")
-        list_buckets()
+        # list_buckets()
+        delete_object_on_bucket()
 
     except S3Error as e:
         print(e)
