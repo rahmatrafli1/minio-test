@@ -11,21 +11,24 @@ def main():
                    secret_key=os.environ.get('SECRET_KEY_MINIO'),
                    secure=False)
     
-    source_file = "/home/diginsight/Documents/Minio/Test/tmp/minio/my-test.txt"
+    file_multi = ['hai.py.', 'ifelse.py']
+    
+    for files in file_multi:
+        source_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/{files};"
+        
+        bucket_name = "python-test-bucket"
+        
+        destination_file = files
 
-    bucket_name = "python-test-bucket"
+        found = client.bucket_exists(bucket_name)
+        if not found:
+            client.make_bucket(bucket_name)
+            print(f"Bucket {bucket_name} created")
+        else:
+            print(f"Bucket {bucket_name} already exists")
 
-    destination_file = "my-test.txt"
-
-    found = client.bucket_exists(bucket_name)
-    if not found:
-        client.make_bucket(bucket_name)
-        print(f"Bucket {bucket_name} created")
-    else:
-        print(f"Bucket {bucket_name} already exists")
-
-    client.fput_object(bucket_name, destination_file, source_file)
-    print(f"File {destination_file} uploaded to bucket {bucket_name}")
+        client.fput_object(bucket_name, destination_file, source_file)
+        print(f"File {destination_file} uploaded to bucket {bucket_name}")
 
 if __name__ == "__main__":
     try:
