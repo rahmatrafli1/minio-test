@@ -172,9 +172,9 @@ if __name__ == "__main__":
         # delete_object_on_bucket()
         # list_objects_on_bucket()
         # download_stream_minio()
-        upload_file_minio()
+        # upload_file_minio()
         # download_file_minio()
-        # make_bucket_minio()
+        make_bucket_minio()
 
     except S3Error as e:
         print(e)
