@@ -135,6 +135,20 @@ def upload_file_minio():
     result = client.fput_object(b_name, o_name, source_file, c_type)
     print("Created {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
 
+# download a file
+def download_file_minio():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "test-bucket"
+    o_name = "text/lorem.txt"
+    destination_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/text/loremnew1.txt"
+
+    result = client.fget_object(b_name, o_name, destination_file)
+    print("Downloaded {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
+
 if __name__ == "__main__":
     try:
         # main()
@@ -142,8 +156,9 @@ if __name__ == "__main__":
         # list_buckets()
         # delete_object_on_bucket()
         # list_objects_on_bucket()
-        download_stream_minio()
-        upload_file_minio()
+        # download_stream_minio()
+        # upload_file_minio()
+        download_file_minio()
 
     except S3Error as e:
         print(e)
