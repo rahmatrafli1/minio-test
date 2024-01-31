@@ -1,3 +1,4 @@
+import io
 from minio import Minio
 from minio.error import S3Error
 import os
@@ -149,6 +150,7 @@ def download_file_minio():
     result = client.fget_object(b_name, o_name, destination_file)
     print("Downloaded {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
 
+# make bucket
 def make_bucket_minio():
     client = Minio(os.environ.get('LOCAL_MINIO'), 
                    access_key=os.environ.get('ACCESS_KEY_MINIO'),
@@ -164,6 +166,21 @@ def make_bucket_minio():
     else:
         print(f"Bucket {b_name} already exists")
 
+# upload a stream
+def upload_stream_minio():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "hello-bucket"
+    o_name = "text/lorem.txt"
+    source_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/{o_name}"
+    c_type = "text/plain"
+
+    result = client.put_object(b_name, o_name, io.FileIO(source_file), -1, c_type, part_size=1024*1024*5)
+    print("Created {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
+
 if __name__ == "__main__":
     try:
         # main()
@@ -174,7 +191,8 @@ if __name__ == "__main__":
         # download_stream_minio()
         # upload_file_minio()
         # download_file_minio()
-        make_bucket_minio()
+        # make_bucket_minio()
+        upload_stream_minio()
 
     except S3Error as e:
         print(e)
