@@ -127,7 +127,7 @@ def upload_file_minio():
                    secret_key=os.environ.get('SECRET_KEY_MINIO'),
                    secure=False)
     
-    b_name = "test-bucket"
+    b_name = "hello-bucket"
     o_name = "text/lorem.txt"
     source_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/{o_name}"
     c_type = "text/plain"
@@ -149,6 +149,21 @@ def download_file_minio():
     result = client.fget_object(b_name, o_name, destination_file)
     print("Downloaded {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
 
+def make_bucket_minio():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "hello-bucket"
+
+    found = client.bucket_exists(b_name)
+    if not found:
+        client.make_bucket(b_name)
+        print(f"Bucket {b_name} created")
+    else:
+        print(f"Bucket {b_name} already exists")
+
 if __name__ == "__main__":
     try:
         # main()
@@ -157,8 +172,9 @@ if __name__ == "__main__":
         # delete_object_on_bucket()
         # list_objects_on_bucket()
         # download_stream_minio()
-        # upload_file_minio()
-        download_file_minio()
+        upload_file_minio()
+        # download_file_minio()
+        # make_bucket_minio()
 
     except S3Error as e:
         print(e)
