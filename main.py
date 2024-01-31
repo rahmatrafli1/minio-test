@@ -30,7 +30,6 @@ def main():
         client.fput_object(bucket_name, destination_file, source_file)
         print(f"File {destination_file} uploaded to bucket {bucket_name}")
 
-
 # ganti nama bucket
 def rename_bucket(old_bucket_name, new_bucket_name):
     # Inisialisasi koneksi ke MinIO
@@ -66,7 +65,6 @@ def rename_bucket(old_bucket_name, new_bucket_name):
 
     except S3Error as e:
         print(f"Terjadi kesalahan MinIO: {e}")
-
 
 # list buckets
 def list_buckets():
@@ -105,13 +103,47 @@ def list_objects_on_bucket():
     for obj in objects:
         print(obj)
 
+# download a stream
+def download_stream_minio():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "test-bucket"
+    o_name = "text/my-test.txt"
+
+    try:
+        response = client.get_object(b_name, o_name, 0, 11)
+        print(response.read())
+    finally:
+        response.close()
+        response.release_conn()
+
+# upload a file
+def upload_file_minio():
+    client = Minio(os.environ.get('LOCAL_MINIO'), 
+                   access_key=os.environ.get('ACCESS_KEY_MINIO'),
+                   secret_key=os.environ.get('SECRET_KEY_MINIO'),
+                   secure=False)
+    
+    b_name = "test-bucket"
+    o_name = "text/lorem.txt"
+    source_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/{o_name}"
+    c_type = "text/plain"
+
+    client.fput_object(b_name, o_name, source_file, c_type)
+    print(f"File {o_name} uploaded to bucket {b_name}")
+
 if __name__ == "__main__":
     try:
         # main()
         # rename_bucket("python-test-bucket", "test-bucket")
         # list_buckets()
         # delete_object_on_bucket()
-        list_objects_on_bucket()
+        # list_objects_on_bucket()
+        # download_stream_minio()
+        upload_file_minio()
 
     except S3Error as e:
         print(e)
