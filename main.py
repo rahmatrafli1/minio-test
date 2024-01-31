@@ -132,8 +132,8 @@ def upload_file_minio():
     source_file = f"/home/diginsight/Documents/Minio/Test/tmp/minio/{o_name}"
     c_type = "text/plain"
 
-    client.fput_object(b_name, o_name, source_file, c_type)
-    print(f"File {o_name} uploaded to bucket {b_name}")
+    result = client.fput_object(b_name, o_name, source_file, c_type)
+    print("Created {0} with etag: {1}, version-id: {2}".format(result.object_name, result.etag, result.version_id))
 
 if __name__ == "__main__":
     try:
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         # list_buckets()
         # delete_object_on_bucket()
         # list_objects_on_bucket()
-        # download_stream_minio()
+        download_stream_minio()
         upload_file_minio()
 
     except S3Error as e:
